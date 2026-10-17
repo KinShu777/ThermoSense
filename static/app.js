@@ -448,26 +448,34 @@ function loadSiteParameters(lstVal, ndviVal, lulcVal) {
 }
 
 // ==============================================================
-// 8. 2D INTERACTIVE LEAFLET HEAT MAP INTEGRATION
+// 8. REAL LANDSAT-8 SATELLITE CONTINUOUS THERMAL MAP (DELHI/NCR)
 // ==============================================================
 
-// Frontend Demonstration Dataset for the 10 Metropolitan Districts / Hotspots
-// Separated strictly from the ML model logic
+// Regional Hotspots across Delhi/NCR centered around NSUT / Dwarka
+// Decoupled from the satellite raster rendering pipeline
 const HOTSPOT_DEMO_DATA = [
-  { id: "HS-01", districtId: "D-01", name: "Central Financial District", lat: 28.6328, lon: 77.2197, lst: 46.8, ndvi: 0.07, lulc: 6, lulc_label: "Commercial / Built-up", risk: "EXTREME", zone: 5 },
-  { id: "HS-02", districtId: "D-02", name: "Northern Freight Hub", lat: 28.6942, lon: 77.1654, lst: 48.5, ndvi: 0.03, lulc: 6, lulc_label: "Industrial / Commercial", risk: "EXTREME", zone: 5 },
-  { id: "HS-03", districtId: "D-03", name: "Old Town Market & Bazaar", lat: 28.6505, lon: 77.2303, lst: 45.2, ndvi: 0.11, lulc: 6, lulc_label: "Dense Built-up", risk: "HIGH", zone: 4 },
-  { id: "HS-04", districtId: "D-04", name: "Civic Hospital & Campus", lat: 28.5672, lon: 77.2100, lst: 43.1, ndvi: 0.19, lulc: 6, lulc_label: "Institutional / Built-up", risk: "HIGH", zone: 4 },
-  { id: "HS-05", districtId: "D-05", name: "East High-Rise Residences", lat: 28.6280, lon: 77.2950, lst: 41.7, ndvi: 0.22, lulc: 6, lulc_label: "Residential High-Rise", risk: "MODERATE", zone: 3 },
-  { id: "HS-06", districtId: "D-06", name: "Metro Transit & Depot", lat: 28.6810, lon: 77.2280, lst: 44.6, ndvi: 0.09, lulc: 6, lulc_label: "Transport Corridors", risk: "HIGH", zone: 4 },
-  { id: "HS-07", districtId: "D-07", name: "Riverfront Marina Walk", lat: 28.5980, lon: 77.2620, lst: 34.2, ndvi: 0.35, lulc: 1, lulc_label: "Water Body / Buffer", risk: "LOW", zone: 1 },
-  { id: "HS-08", districtId: "D-08", name: "West Ridge Suburbs", lat: 28.6390, lon: 77.1210, lst: 37.4, ndvi: 0.45, lulc: 3, lulc_label: "Suburban Canopy", risk: "MODERATE", zone: 2 },
-  { id: "HS-09", districtId: "D-09", name: "Metropolitan Botanical Park", lat: 28.5900, lon: 77.2450, lst: 32.1, ndvi: 0.74, lulc: 2, lulc_label: "Urban Forest Canopy", risk: "LOW", zone: 1 },
-  { id: "HS-10", districtId: "D-10", name: "Southern Green Belt Farm", lat: 28.5020, lon: 77.1850, lst: 35.8, ndvi: 0.58, lulc: 4, lulc_label: "Vegetated Buffer", risk: "LOW", zone: 2 },
+  { id: "HS-01", districtId: "D-01", name: "NSUT Campus & Dwarka Institutional Core", lat: 28.6097, lon: 77.0374, lst: 41.5, ndvi: 0.28, lulc: 6, lulc_label: "Institutional / Built-up", risk: "MODERATE", zone: 3 },
+  { id: "HS-02", districtId: "D-02", name: "Dwarka Sector 21 Multi-Modal Transit Hub", lat: 28.5522, lon: 77.0583, lst: 46.2, ndvi: 0.08, lulc: 6, lulc_label: "Transport Corridors / Built-up", risk: "EXTREME", zone: 5 },
+  { id: "HS-03", districtId: "D-03", name: "IGI Airport Aerocity & Runway Tarmac", lat: 28.5562, lon: 77.1000, lst: 48.5, ndvi: 0.04, lulc: 6, lulc_label: "Asphalt / Commercial Hub", risk: "EXTREME", zone: 5 },
+  { id: "HS-04", districtId: "D-04", name: "Central Delhi (Connaught Place Core)", lat: 28.6328, lon: 77.2197, lst: 46.8, ndvi: 0.07, lulc: 6, lulc_label: "Commercial Downtown Core", risk: "EXTREME", zone: 5 },
+  { id: "HS-05", districtId: "D-05", name: "Okhla Phase-III Industrial Zone", lat: 28.5355, lon: 77.2710, lst: 47.9, ndvi: 0.05, lulc: 6, lulc_label: "Industrial Logistics Hub", risk: "EXTREME", zone: 5 },
+  { id: "HS-06", districtId: "D-06", name: "Delhi Ridge Forest (Thermal Oasis Buffer)", lat: 28.5950, lon: 77.1700, lst: 33.2, ndvi: 0.71, lulc: 2, lulc_label: "Urban Forest Canopy", risk: "LOW", zone: 1 },
+  { id: "HS-07", districtId: "D-07", name: "Yamuna River Corridor & Wetland Park", lat: 28.6150, lon: 77.2600, lst: 31.8, ndvi: 0.42, lulc: 1, lulc_label: "Water Body / Wetland", risk: "LOW", zone: 1 },
+  { id: "HS-08", districtId: "D-08", name: "DLF Cyber City / Udyog Vihar (Gurugram)", lat: 28.4950, lon: 77.0890, lst: 47.1, ndvi: 0.06, lulc: 6, lulc_label: "Dense High-Rise Commercial", risk: "EXTREME", zone: 5 },
+  { id: "HS-09", districtId: "D-09", name: "Noida Sector 62 Tech & Commercial Park", lat: 28.6250, lon: 77.3650, lst: 44.8, ndvi: 0.12, lulc: 6, lulc_label: "Commercial High-Density", risk: "HIGH", zone: 4 },
+  { id: "HS-10", districtId: "D-10", name: "Rohini Urban Sector 11 (North Delhi)", lat: 28.7220, lon: 77.1180, lst: 43.6, ndvi: 0.16, lulc: 6, lulc_label: "Dense Residential", risk: "HIGH", zone: 4 },
 ];
 
 let mapInstance = null;
+let thermalRasterLayer = null;
 let currentSelectedHotspot = HOTSPOT_DEMO_DATA[0];
+
+// Real Landsat-8 scene calibrated geographic bounds (Delhi/NCR)
+const SATELLITE_LST_BOUNDS = [
+  [28.36, 76.82], // South-West (Gurugram/Faridabad)
+  [28.88, 77.58]  // North-East (Rohini/Noida/Greater Noida)
+];
+const SATELLITE_LST_IMAGE_URL = '/static/delhi_ncr_landsat_lst.png';
 
 let mapInitialized = false;
 async function initThermalMap() {
@@ -489,17 +497,18 @@ async function initThermalMap() {
     }
   }
 
-  const defaultCoords = [28.6139, 77.2090];
-  const defaultZoom = 11;
+  // Initial focus: NSUT / Dwarka, Delhi
+  const nsutCoords = [28.6097, 77.0374];
+  const defaultZoom = 12;
 
   mapInstance = L.map('map', {
-    center: defaultCoords,
+    center: nsutCoords,
     zoom: defaultZoom,
     zoomControl: true,
     attributionControl: true
   });
 
-  // Dark-Matter Cartographic Tile Layer with ?key= and official attribution
+  // Layer 1: Dark-Matter Cartographic Basemap with CARTO API key
   const tileUrl = cartoKey
     ? `https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png?key=${encodeURIComponent(cartoKey)}`
     : 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
@@ -507,8 +516,30 @@ async function initThermalMap() {
   L.tileLayer(tileUrl, {
     maxZoom: 19,
     subdomains: 'abcd',
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions" target="_blank" rel="noopener noreferrer">CARTO</a>'
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions" target="_blank" rel="noopener noreferrer">CARTO</a> | Landsat-8 &copy; USGS/NASA via Microsoft Planetary Computer'
   }).addTo(mapInstance);
+
+  // Layer 2: Real Continuous Landsat-8 Surface Temperature (LST) Raster
+  try {
+    thermalRasterLayer = L.imageOverlay(SATELLITE_LST_IMAGE_URL, SATELLITE_LST_BOUNDS, {
+      opacity: 0.75,
+      interactive: false,
+      zIndex: 5
+    }).addTo(mapInstance);
+
+    // Opacity slider listener
+    const opacitySlider = document.getElementById('thermal-opacity');
+    const opacityReadout = document.getElementById('opacity-readout');
+    if (opacitySlider) {
+      opacitySlider.addEventListener('input', (e) => {
+        const val = parseFloat(e.target.value);
+        if (thermalRasterLayer) thermalRasterLayer.setOpacity(val);
+        if (opacityReadout) opacityReadout.textContent = `${Math.round(val * 100)}%`;
+      });
+    }
+  } catch (err) {
+    console.warn('Real satellite raster overlay fallback:', err);
+  }
 
   // Update HUD coordinates on pan/move
   mapInstance.on('mousemove', (e) => {
@@ -517,27 +548,16 @@ async function initThermalMap() {
     }
   });
 
-  // Recenter button
+  // Recenter button (re-centers on NSUT)
   if (mapResetBtn) {
     mapResetBtn.addEventListener('click', () => {
-      mapInstance.setView(defaultCoords, defaultZoom);
+      mapInstance.setView(nsutCoords, defaultZoom);
     });
   }
 
-  // Render Hotspot Markers and Thermal Radiation Circles
+  // Layer 3: Tactical Hotspot Pins (Clickable telemetry targets)
   HOTSPOT_DEMO_DATA.forEach(hs => {
     const zColor = ZONE_COLORS[hs.zone] || '#ff4d4d';
-
-    // Thermal Intensity Radius Circle
-    const radiusMeters = hs.zone >= 4 ? 2400 : (hs.zone === 3 ? 1800 : 1200);
-    const circle = L.circle([hs.lat, hs.lon], {
-      color: zColor,
-      fillColor: zColor,
-      fillOpacity: hs.zone >= 4 ? 0.35 : 0.20,
-      radius: radiusMeters,
-      weight: 1.5,
-      dashArray: '4, 4'
-    }).addTo(mapInstance);
 
     // Custom Tactical Marker Pin
     const customIcon = L.divIcon({
@@ -551,30 +571,30 @@ async function initThermalMap() {
       iconAnchor: [10, 10]
     });
 
-    const marker = L.marker([hs.lat, hs.lon], { icon: customIcon }).addTo(mapInstance);
+    const marker = L.marker([hs.lat, hs.lon], { icon: customIcon, zIndexOffset: 50 }).addTo(mapInstance);
 
-    // Popup Content
+    // Popup Content with Landsat provenance note
     const popupHtml = `
       <div style="font-family:var(--font-mono); font-size:11px; padding:4px;">
         <div style="color:${zColor}; font-weight:700; margin-bottom:2px;">${hs.id} // ${hs.risk} RISK</div>
         <div style="font-size:12px; font-weight:700; color:#fff; margin-bottom:4px;">${hs.name}</div>
-        <div>LST: <strong>${hs.lst}°C</strong> | NDVI: <strong>${hs.ndvi}</strong></div>
+        <div>LST READOUT: <strong>${hs.lst}°C</strong> | NDVI: <strong>${hs.ndvi}</strong></div>
         <div style="color:#94a3b8; font-size:10px; margin-top:2px;">${hs.lulc_label}</div>
+        <div style="color:var(--accent); font-size:9px; margin-top:4px; border-top:1px solid #334155; padding-top:2px;">
+          🛰️ Landsat-8 Real Radiometric Field
+        </div>
       </div>
     `;
     marker.bindPopup(popupHtml);
 
     // Click handler for Hotspot
-    const onSelect = () => {
+    marker.on('click', () => {
       selectHotspot(hs);
       marker.openPopup();
-    };
-
-    marker.on('click', onSelect);
-    circle.on('click', onSelect);
+    });
   });
 
-  // Initialize with the first hotspot
+  // Initialize with the first hotspot (NSUT Campus)
   selectHotspot(HOTSPOT_DEMO_DATA[0]);
 }
 

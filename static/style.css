@@ -663,6 +663,110 @@ body.command-center {
   letter-spacing: 0.08em;
 }
 
+.map-opacity-control {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  padding: 3px 8px;
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+  font-size: 10px;
+}
+
+.opacity-label {
+  color: var(--text-dim);
+  font-size: 9px;
+  font-weight: 600;
+}
+
+.opacity-slider {
+  width: 60px;
+  height: 4px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+#opacity-readout {
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 10px;
+  min-width: 25px;
+}
+
+/* SATELLITE PROVENANCE BANNER */
+.satellite-provenance-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding: 8px 12px;
+  background: rgba(13, 18, 26, 0.95);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius);
+  flex-wrap: wrap;
+}
+
+.sat-chip {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+.sat-lbl {
+  color: var(--text-dim);
+  font-size: 9px;
+  font-weight: 600;
+}
+
+.sat-val {
+  color: var(--text);
+  font-weight: 700;
+}
+
+.sat-disclaimer {
+  margin-left: auto;
+  color: var(--mod);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  background: rgba(251, 191, 36, 0.08);
+  border: 1px solid rgba(251, 191, 36, 0.2);
+  padding: 2px 6px;
+  border-radius: 2px;
+}
+
+@media (max-width: 900px) {
+  .sat-disclaimer { margin-left: 0; width: 100%; }
+}
+
+/* Continuous Scale Bar matching Landsat Turbo colormap */
+.legend-scale-bar-continuous {
+  height: 8px;
+  width: 280px;
+  border-radius: 2px;
+  background: linear-gradient(
+    to right,
+    #30123b 0%,
+    #4145ab 12%,
+    #4675ed 25%,
+    #39a2fc 38%,
+    #1bcfd4 48%,
+    #24eca6 56%,
+    #61fc4c 65%,
+    #d1e834 75%,
+    #fe9b2d 85%,
+    #d93806 94%,
+    #7a0403 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
 .legend-scale-bar {
   display: flex;
   height: 6px;

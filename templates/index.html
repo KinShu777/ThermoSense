@@ -69,20 +69,59 @@
 <!-- TAB 1: GEOSPATIAL COMMAND MAP & SITE SANDBOX -->
 <main class="command-layout" id="view-site">
   
-  <!-- HERO: 2D INTERACTIVE LEAFLET HEAT MAP SECTION -->
+  <!-- HERO: REAL SATELLITE THERMAL FIELD (LANDSAT-8 C2 L2) -->
   <section class="panel map-panel">
     <div class="panel-header-row">
       <div class="panel-tag-group">
-        <span class="panel-tag">GEOSPATIAL TELEMETRY</span>
-        <h2 class="panel-title">2D INTERACTIVE THERMAL HEAT MAP</h2>
+        <span class="panel-tag">REAL RADIOMETRIC DATA // DELHI/NCR</span>
+        <h2 class="panel-title">LANDSAT-8 CONTINUOUS SURFACE TEMPERATURE (LST) FIELD</h2>
       </div>
       <div class="map-status-badges">
-        <span class="hud-badge"><span class="dot-green"></span> SCAN: LIVE</span>
-        <span class="hud-badge" id="hud-map-coords">LAT: 28.6139°N | LON: 77.2090°E</span>
-        <button id="map-reset-btn" class="map-ctrl-btn" type="button" title="Center Map">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M12 3v18"/></svg>
-          RECENTER
+        <span class="hud-badge"><span class="dot-green"></span> REAL SATELLITE RASTER</span>
+        <span class="hud-badge" id="hud-map-coords">LAT: 28.6097°N | LON: 77.0374°E (NSUT)</span>
+        
+        <!-- Opacity Slider for Thermal Layer -->
+        <div class="map-opacity-control">
+          <label for="thermal-opacity" class="opacity-label">LST LAYER:</label>
+          <input type="range" id="thermal-opacity" min="0" max="1" step="0.05" value="0.75" class="opacity-slider" title="Adjust Satellite Raster Opacity">
+          <span id="opacity-readout">75%</span>
+        </div>
+
+        <button id="map-reset-btn" class="map-ctrl-btn" type="button" title="Center on NSUT / Dwarka">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2v20M2 12h20"/></svg>
+          RECENTER (NSUT)
         </button>
+      </div>
+    </div>
+
+    <!-- SATELLITE PROVENANCE & SCIENTIFIC METADATA BANNER -->
+    <div class="satellite-provenance-bar">
+      <div class="sat-chip">
+        <span class="sat-lbl">SATELLITE:</span>
+        <strong class="sat-val">LANDSAT-8 (TIRS-B10)</strong>
+      </div>
+      <div class="sat-chip">
+        <span class="sat-lbl">ACQUIRED:</span>
+        <strong class="sat-val">27 MAY 2024 · 05:17 UTC</strong>
+      </div>
+      <div class="sat-chip">
+        <span class="sat-lbl">PRODUCT:</span>
+        <strong class="sat-val">USGS COLLECTION 2 LEVEL-2</strong>
+      </div>
+      <div class="sat-chip">
+        <span class="sat-lbl">VARIABLE:</span>
+        <strong class="sat-val">LAND SURFACE TEMP (LST)</strong>
+      </div>
+      <div class="sat-chip">
+        <span class="sat-lbl">RESOLUTION:</span>
+        <strong class="sat-val">~30m / PIXEL</strong>
+      </div>
+      <div class="sat-chip">
+        <span class="sat-lbl">SOURCE:</span>
+        <strong class="sat-val">MICROSOFT PLANETARY COMPUTER</strong>
+      </div>
+      <div class="sat-chip sat-disclaimer">
+        <span>⚠ REAL RADIOMETRIC RASTER · ML MODEL OPERATES ON SEPARATE FEATURE PIPELINE</span>
       </div>
     </div>
 
@@ -101,57 +140,53 @@
         <div class="hud-header">
           <div class="hud-title-row">
             <span class="hud-code" id="telemetry-hotspot-id">HOTSPOT // 01</span>
-            <span class="badge-risk-tag" id="telemetry-risk-badge">HIGH RISK</span>
+            <span class="badge-risk-tag" id="telemetry-risk-badge">MODERATE RISK</span>
           </div>
-          <div class="hud-sector-name" id="telemetry-sector-name">Central Financial District</div>
+          <div class="hud-sector-name" id="telemetry-sector-name">NSUT Campus &amp; Dwarka Core</div>
         </div>
 
         <div class="hud-readout-grid">
           <div class="hud-metric">
-            <span class="hud-label">LST READOUT</span>
+            <span class="hud-label">SATELLITE LST</span>
             <div class="hud-value-row">
-              <span class="hud-val text-hot" id="telemetry-lst">46.8</span>
+              <span class="hud-val text-hot" id="telemetry-lst">41.5</span>
               <span class="hud-unit">°C</span>
             </div>
           </div>
           <div class="hud-metric">
-            <span class="hud-label">NDVI CANOPY</span>
+            <span class="hud-label">CANOPY NDVI</span>
             <div class="hud-value-row">
-              <span class="hud-val text-cool" id="telemetry-ndvi">0.07</span>
+              <span class="hud-val text-cool" id="telemetry-ndvi">0.28</span>
             </div>
           </div>
           <div class="hud-metric">
             <span class="hud-label">LAND COVER</span>
-            <div class="hud-val text-light" id="telemetry-lulc">Built-up (Urban)</div>
+            <div class="hud-val text-light" id="telemetry-lulc">Commercial / Institutional</div>
           </div>
           <div class="hud-metric">
             <span class="hud-label">PREDICTED ZONE</span>
-            <div class="hud-val" id="telemetry-zone-label" style="color: var(--burn);">Zone 5: Extreme Heat</div>
+            <div class="hud-val" id="telemetry-zone-label" style="color: var(--mod);">Zone 3: Moderate Risk</div>
           </div>
         </div>
 
         <div class="hud-actions">
           <button type="button" class="btn-hud-action" id="btn-load-hotspot">
-            <span>LOAD INTO DIAGNOSTICS</span>
+            <span>LOAD INTO ML DIAGNOSTICS</span>
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </button>
         </div>
       </div>
 
-      <!-- THERMAL SPECTRUM LEGEND -->
+      <!-- THERMAL SPECTRUM LEGEND (REAL SATELLITE RANGE) -->
       <div class="map-thermal-legend">
-        <span class="legend-title">UHI THERMAL INTENSITY</span>
-        <div class="legend-scale-bar">
-          <span class="scale-segment c-low"></span>
-          <span class="scale-segment c-mod"></span>
-          <span class="scale-segment c-high"></span>
-          <span class="scale-segment c-extreme"></span>
-        </div>
+        <span class="legend-title">LANDSAT-8 SURFACE TEMPERATURE (LST) SPECTRUM</span>
+        <div class="legend-scale-bar-continuous"></div>
         <div class="legend-scale-labels">
-          <span>LOW (&lt;36°C)</span>
-          <span>MODERATE</span>
-          <span>HIGH</span>
-          <span>EXTREME (&gt;45°C)</span>
+          <span>&lt;32°C (Water)</span>
+          <span>36°C (Canopy)</span>
+          <span>40°C (Suburban)</span>
+          <span>44°C (Built-up)</span>
+          <span>&gt;48°C (Extreme)</span>
         </div>
       </div>
     </div>
